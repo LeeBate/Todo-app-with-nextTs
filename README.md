@@ -13,7 +13,7 @@ vercel: https://todo-app-with-next-ts.vercel.app/
 
 1. **Clone repository**
 ```bash
-git clone [<repository-url>](https://github.com/LeeBate/Todo-app-with-nextTs.git)
+git clone https://github.com/LeeBate/Todo-app-with-nextTs.git
 cd Todo-app-with-nextTs
 ```
 
