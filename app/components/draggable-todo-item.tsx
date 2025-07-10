@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { Todo } from "@/app/lib/types";
 import { useDragDrop } from "@/app/components/drag-drop-context";
 import { Check, FilePenLine, Trash } from "lucide-react";
+import RecentlyDroppedIndicator from "./drag-bounce";
 
 interface DraggableTodoItemProps {
   todo: Todo;
@@ -13,6 +14,7 @@ interface DraggableTodoItemProps {
   onDelete: (id: number) => void;
   onEdit: (id: number, title: string) => void;
   isLoading: boolean;
+  indicatorType: "new" | "completed" | null;
 }
 
 export default function DraggableTodoItem({
@@ -21,10 +23,11 @@ export default function DraggableTodoItem({
   onDelete,
   onEdit,
   isLoading,
+  indicatorType,
 }: DraggableTodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
-  const { draggedItem, setDraggedItem } = useDragDrop();
+  const { draggedItem, setDraggedItem, recentlyDroppedItem } = useDragDrop();
 
   const handleEdit = () => {
     if (editTitle?.trim()) {
@@ -65,22 +68,40 @@ export default function DraggableTodoItem({
   };
 
   const isDragging = draggedItem === todo.id;
+  const isRecentlyDropped = recentlyDroppedItem === todo.id;
+
+  const getHighlightClasses = () => {
+    if (!isRecentlyDropped) return "";
+
+    switch (indicatorType) {
+      case "new":
+        return "ring-2 ring-blue-400 bg-blue-50 shadow-lg";
+      case "completed":
+        return "ring-2 ring-green-400 bg-green-50 shadow-lg";
+      default:
+        return "";
+    }
+  };
 
   return (
     <div
       draggable={!isEditing && !isLoading}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      className={`card p-4 mb-3 transition-all duration-200 cursor-move ${
+      className={`card p-4 mb-3 transition-all duration-200 cursor-move relative ${
         isDragging
           ? "opacity-50 scale-95 rotate-2 shadow-lg"
           : "hover:shadow-lg hover:scale-[1.02]"
-      } ${
+      } ${getHighlightClasses()} ${
         !isEditing && !isLoading
           ? "hover:cursor-grab active:cursor-grabbing"
           : "cursor-default"
       }`}
     >
+      <RecentlyDroppedIndicator
+        isRecentlyDropped={recentlyDroppedItem === todo.id}
+        indicatorType={indicatorType}
+      />
       <div className="flex items-center gap-3">
         {/* Drag Handle */}
         {!isEditing && (

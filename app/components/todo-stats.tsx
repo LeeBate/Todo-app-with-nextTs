@@ -20,16 +20,16 @@ export default function TodoStats({
           <div className="text-gray-600">ทั้งหมด</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-green-600">
-            {completedCount}
-          </div>
-          <div className="text-gray-600">เสร็จแล้ว</div>
-        </div>
-        <div className="text-center">
           <div className="text-2xl font-bold text-yellow-600">
             {pendingCount}
           </div>
           <div className="text-gray-600">ยังไม่เสร็จ</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-green-600">
+            {completedCount}
+          </div>
+          <div className="text-gray-600">เสร็จแล้ว</div>
         </div>
       </div>
     </header>

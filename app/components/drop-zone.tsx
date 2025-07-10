@@ -63,7 +63,7 @@ export default function DropZone({
       onDrop={handleDrop}
     >
       {/* Drop Zone Header */}
-      <div className="p-4 border-b border-gray-200 bg-white rounded-t-lg">
+      <div className="p-4 border-b border-gray-200 bg-white rounded-t-xl shadow-xs">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             {zone === "completed" ? (
