@@ -1,3 +1,4 @@
+import { UpdateTodoRequest } from "@/app/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
 const EXTERNAL_API_URL = process.env.API_BASE_URL;
@@ -35,10 +36,12 @@ export async function PATCH(req: NextRequest, context: any) {
       throw new Error("หา API_BASE_URL ไม่เจอจ้า");
     }
 
-    const updateInfo = {
-      upTitle: body.title.trim(),
-      upCompleted: body.completed,
-    };
+    const updateInfo: UpdateTodoRequest = {};
+    if (body.title && body.completed !== undefined) {
+      updateInfo.title = body?.title?.trim();
+      updateInfo.completed = body?.completed;
+    }
+
     console.log("updateInfo@@", updateInfo);
     const res = await fetch(`${EXTERNAL_API_URL}/${id}`, {
       method: "PATCH",
@@ -66,7 +69,7 @@ export async function PATCH(req: NextRequest, context: any) {
   }
 }
 
-export async function DELETE(context: any) {
+export async function DELETE(req: NextRequest, context: any) {
   try {
     const { id } = await context.params;
 
@@ -78,10 +81,7 @@ export async function DELETE(context: any) {
       throw new Error("พบข้อผิดพลาดของการลบข้อมูล");
     }
 
-    return NextResponse.json(
-      { message: "ลบข้อมูลสำเร็จจ้า" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "ลบข้อมูลสำเร็จจ้า" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "พบข้อผิดพลาดของการลบข้อมูล" },

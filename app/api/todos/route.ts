@@ -1,3 +1,4 @@
+import { CreateTodoRequest } from "@/app/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
 const EXTERNAL_API_URL = process.env.API_BASE_URL;
@@ -7,7 +8,7 @@ export async function GET() {
     if (!EXTERNAL_API_URL) {
       throw new Error("หา API_BASE_URL ไม่เจอจ้า");
     }
-    const res = await fetch(EXTERNAL_API_URL, {
+    const res = await fetch(`${EXTERNAL_API_URL}?_limit=20`, {
       next: { revalidate: 60 },
     });
 
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest) {
       throw new Error("หา API_BASE_URL ไม่เจอจ้า");
     }
 
-    const todoInfo = {
+    const todoInfo: CreateTodoRequest = {
       title: body.title.trim(),
       completed: body.completed || false,
       userId: body.userId || 1,
