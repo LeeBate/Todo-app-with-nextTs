@@ -12,29 +12,29 @@ vercel: https://todo-app-with-next-ts.vercel.app/
 ### ขั้นตอนการติดตั้ง
 
 1. **Clone repository**
-\`\`\`bash
+```bash
 git clone [<repository-url>](https://github.com/LeeBate/Todo-app-with-nextTs.git)
 cd Todo-app-with-nextTs
-\`\`\`
+```
 
 2. **ติดตั้ง dependencies**
-\`\`\`bash
+```bash
 npm install
 # หรือ
 yarn install
-\`\`\`
+```
 
 3. **รันโครงการในโหมด development**
-\`\`\`bash
+```bash
 npm run dev
 # หรือ
 yarn dev
-\`\`\`
+```
 
 4. **เปิดเบราว์เซอร์**
-\`\`\`
+```
 http://localhost:3000
-\`\`\`
+```
 
 ## เหตุผลในการเลือกใช้เทคโนโลยี
 
@@ -55,27 +55,27 @@ http://localhost:3000
 ## ฟีเจอร์ Drag & Drop
 
 ### Technical Implementation
-\`\`\`typescript
+```typescript
 // Drag Events
 onDragStart  // เริ่มลาก - set drag data
 onDragEnd    // จบการลาก - cleanup
 onDragOver   // ลากผ่าน - prevent default
 onDragLeave  // ออกจาก drop zone - clear highlight
 onDrop       // วาง - handle drop logic
-\`\`\`
+```
 
 ### State Management
-\`\`\`typescript
+```typescript
 interface DragDropState {
   draggedItem: number | null      // ID ของ item ที่กำลังลาก
   dropZone: string | null         // Zone ที่กำลัง hover
   recentlyDroppedItem: number | null // Item ที่เพิ่งถูกวาง
   indicatorType: 'new' | 'completed' | null // ประเภทของ badge
 }
-\`\`\`
+```
 
 ### Badge System Logic
-\`\`\`typescript
+```typescript
 // แสดง badge เมื่อ:
 1. เพิ่ม Todo ใหม่ → "ใหม่!" (30 วินาที)
 2. ลาก pending → completed → "เสร็จแล้ว!" (30 วินาที)
@@ -84,18 +84,18 @@ interface DragDropState {
 1. ครบ 30 วินาที (auto-hide)
 2. ลาก completed → pending (ทันที)
 3. คลิก checkbox เพื่อยกเลิก (ทันที)
-\`\`\`
+```
 
 ## API Design
 
 ### RESTful API Structure
-\`\`\`typescript
+```typescript
 GET    /api/todos       // ดึงรายการ todos (limit 10)
 POST   /api/todos       // สร้าง todo ใหม่
 GET    /api/todos/[id]  // ดึง todo ตาม ID
 PATCH  /api/todos/[id]  // อัพเดท todo
 DELETE /api/todos/[id]  // ลบ todo
-\`\`\`
+```
 
 ### External API Integration
 - **JSONPlaceholder**: `https://jsonplaceholder.typicode.com/todos`
@@ -105,16 +105,16 @@ DELETE /api/todos/[id]  // ลบ todo
 ## 🗂 State Management
 
 ### Local State Strategy
-\`\`\`typescript
+```typescript
 // Main App State
 const [todos, setTodos] = useState<Todo[]>([])
 const [loading, setLoading] = useState(true)
 const [error, setError] = useState<string | null>(null)
 const [actionLoading, setActionLoading] = useState(false)
-\`\`\`
+```
 
 ### Context API Usage
-\`\`\`typescript
+```typescript
 // Drag & Drop Context
 const DragDropContext = createContext<{
   draggedItem: number | null
@@ -123,4 +123,4 @@ const DragDropContext = createContext<{
   indicatorType: 'new' | 'completed' | null
   // ... setter functions
 }>()
-\`\`\`
+```
