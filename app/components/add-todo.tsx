@@ -11,7 +11,7 @@ interface AddTodoProps {
 }
 
 export default function AddTodo({ onAdd, isLoading }: AddTodoProps) {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

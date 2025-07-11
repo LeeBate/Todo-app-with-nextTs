@@ -8,7 +8,7 @@ export async function GET() {
     if (!EXTERNAL_API_URL) {
       throw new Error("หา API_BASE_URL ไม่เจอจ้า");
     }
-    const res = await fetch(`${EXTERNAL_API_URL}?_limit=20`);
+    const res = await fetch(`${EXTERNAL_API_URL}?_limit=1`);
 
     if (!res.ok) {
       throw new Error("พบข้อผิดพลาดในการดึงข้อมูลจาก API");

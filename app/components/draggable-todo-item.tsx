@@ -25,7 +25,7 @@ export default function DraggableTodoItem({
   isLoading,
   indicatorType,
 }: DraggableTodoItemProps) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editTitle, setEditTitle] = useState(todo.title);
   const { draggedItem, setDraggedItem, recentlyDroppedItem } = useDragDrop();
 

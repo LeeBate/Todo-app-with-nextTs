@@ -12,8 +12,8 @@ export default function RecentlyDroppedIndicator({
   isRecentlyDropped,
   indicatorType,
 }: RecentlyDroppedIndicatorProps) {
-  const [showIndicator, setShowIndicator] = useState(false);
-  const [progress, setProgress] = useState(100);
+  const [showIndicator, setShowIndicator] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(100);
 
   useEffect(() => {
     if (isRecentlyDropped && indicatorType) {

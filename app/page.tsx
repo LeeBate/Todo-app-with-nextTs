@@ -13,9 +13,9 @@ import { X } from "lucide-react";
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   const {
     setRecentlyDroppedItem,
