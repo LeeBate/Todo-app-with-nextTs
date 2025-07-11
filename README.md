@@ -101,7 +101,7 @@ DELETE /api/todos/[id]  // ลบ todo
 - **JSONPlaceholder**: `https://jsonplaceholder.typicode.com/todos`
 - **Error Fallback**: จัดการเมื่อ external API ไม่พร้อมใช้งาน
 
-## 🗂 State Management
+## State Management
 
 ### Local State Strategy
 ```typescript
