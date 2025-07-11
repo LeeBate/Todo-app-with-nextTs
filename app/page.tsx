@@ -99,9 +99,11 @@ export default function Home() {
       const todo = todos.find((t) => t.id === id);
       if (!todo) return;
 
-       if (todo.completed && recentlyDroppedItem === id) {
-        setRecentlyDroppedItem(null)
-        setIndicatorType(null)
+      const newCompleted = !todo.completed;
+
+      if (todo.completed && recentlyDroppedItem === id) {
+        setRecentlyDroppedItem(null);
+        setIndicatorType(null);
       }
 
       const res = await fetch(`/api/todos/${id}`, {
@@ -110,7 +112,7 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          completed: !todo.completed,
+          completed: newCompleted,
         }),
       });
 
@@ -119,9 +121,38 @@ export default function Home() {
         return;
       }
 
-      setTodos((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
-      );
+      setTodos((prev) => {
+        const updatedTodos = prev.map((t) =>
+          t.id === id ? { ...t, completed: newCompleted } : t
+        );
+
+        const completedTodos = updatedTodos.filter((t) => t.completed);
+        const pendingTodos = updatedTodos.filter((t) => !t.completed);
+        const toggledTodo = updatedTodos.find((t) => t.id === id);
+
+        if (toggledTodo) {
+          if (newCompleted) {
+            const otherCompletedTodos = completedTodos.filter(
+              (t) => t.id !== id
+            );
+            return [...pendingTodos, toggledTodo, ...otherCompletedTodos];
+          } else {
+            const otherPendingTodos = pendingTodos.filter((t) => t.id !== id);
+            return [toggledTodo, ...otherPendingTodos, ...completedTodos];
+          }
+        }
+
+        return updatedTodos;
+      });
+
+      if (!todo.completed && newCompleted) {
+        setRecentlyDroppedItem(id);
+        setIndicatorType("completed");
+        setTimeout(() => {
+          setRecentlyDroppedItem(null);
+          setIndicatorType(null);
+        }, 30000);
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "ไม่สามารถอัพเดท Todo ได้จ้า"
@@ -189,9 +220,9 @@ export default function Home() {
       const draggedTodo = todos.find((t) => t.id === todoId);
       if (!draggedTodo) return;
 
-            if (!newCompleted && recentlyDroppedItem === todoId) {
-        setRecentlyDroppedItem(null)
-        setIndicatorType(null)
+      if (!newCompleted && recentlyDroppedItem === todoId) {
+        setRecentlyDroppedItem(null);
+        setIndicatorType(null);
       }
       const res = await fetch(`/api/todos/${todoId}`, {
         method: "PATCH",
@@ -272,6 +303,9 @@ export default function Home() {
   }
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      {actionLoading && (
+        <div className=" absolute right-5 w-6 h-6 loading-spinner"/>
+      )}
       <div className=" container mx-auto px-4 max-w-6xl">
         {error && <ErrorAlert message={error} onRetry={fetchTodo} />}
         <div className=" grid grid-cols-1 lg:grid-cols-2 gap-4">
