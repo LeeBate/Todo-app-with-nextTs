@@ -99,10 +99,9 @@ DELETE /api/todos/[id]  // ลบ todo
 
 ### External API Integration
 - **JSONPlaceholder**: `https://jsonplaceholder.typicode.com/todos`
-- **Caching**: ใช้ Next.js `revalidate` สำหรับ GET requests
 - **Error Fallback**: จัดการเมื่อ external API ไม่พร้อมใช้งาน
 
-## 🗂 State Management
+## State Management
 
 ### Local State Strategy
 ```typescript
