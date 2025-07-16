@@ -17,21 +17,26 @@ git clone https://github.com/LeeBate/Todo-app-with-nextTs.git
 cd Todo-app-with-nextTs
 ```
 
-2. **ติดตั้ง dependencies**
+2. **เพิ่ม File .env ที่ด้านนอกสุดของโปรเจค**
+```bash
+API_BASE_URL = "https://jsonplaceholder.typicode.com/todos"
+```
+
+3. **ติดตั้ง dependencies**
 ```bash
 npm install
 # หรือ
 yarn install
 ```
 
-3. **รันโครงการในโหมด development**
+4. **รันโครงการในโหมด development**
 ```bash
 npm run dev
 # หรือ
 yarn dev
 ```
 
-4. **เปิดเบราว์เซอร์**
+5. **เปิดเบราว์เซอร์**
 ```
 http://localhost:3000
 ```
