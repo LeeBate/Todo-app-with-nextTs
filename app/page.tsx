@@ -212,6 +212,87 @@ console.log("todos@@",todos)
     }
   };
 
+  const handleDrop = async (todoId: number, newCompleted: boolean) => {
+    try {
+      setActionLoading(true);
+      setError(null);
+
+      const draggedTodo = todos.find((t) => t.id === todoId);
+      if (!draggedTodo) return;
+
+      if (!newCompleted && recentlyDroppedItem === todoId) {
+        setRecentlyDroppedItem(null);
+        setIndicatorType(null);
+      }
+      const res = await fetch(`/api/todos/${todoId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          completed: newCompleted,
+        }),
+      });
+
+      if (!res.ok) {
+        setError("พบข้อผิดพลาดในการอัพเดทข้อมูลจ้า");
+        return;
+      }
+
+      setTodos((prev) => {
+        const updatedTodos = prev.map((t) =>
+          t.id === todoId ? { ...t, completed: newCompleted } : t
+        );
+
+        // แยก todos ตามสถานะ
+        const completedTodos = updatedTodos.filter((t) => t.completed);
+        const pendingTodos = updatedTodos.filter((t) => !t.completed);
+
+        // หา todo ที่เพิ่งถูกลาก
+        const draggedTodo = updatedTodos.find((t) => t.id === todoId);
+
+        if (draggedTodo) {
+          if (newCompleted) {
+            // ถ้าลากไป "เสร็จแล้ว" ให้ไปอยู่ด้านบนของ completed todos
+            const otherCompletedTodos = completedTodos.filter(
+              (t) => t.id !== todoId
+            );
+            return [...pendingTodos, draggedTodo, ...otherCompletedTodos];
+          } else {
+            // ถ้าลากไป "ยังไม่เสร็จ" ให้ไปอยู่ด้านบนของ pending todos
+            const otherPendingTodos = pendingTodos.filter(
+              (t) => t.id !== todoId
+            );
+            return [draggedTodo, ...otherPendingTodos, ...completedTodos];
+          }
+        }
+
+        return updatedTodos;
+      });
+
+      let newIndicatorType: "new" | "completed" | null = null;
+console.log("draggedTodov@@",draggedTodo)
+      if (!draggedTodo.completed && newCompleted) {
+        newIndicatorType = "completed";
+      }
+
+      if (newIndicatorType) {
+        setRecentlyDroppedItem(todoId);
+        setIndicatorType(newIndicatorType);
+        setTimeout(() => {
+          setRecentlyDroppedItem(null);
+          setIndicatorType(null);
+        }, 30000);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "ไม่สามารถอัพเดท Todo ได้จ้า"
+      );
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const pendingTodos = todos.filter((td) => !td.completed);
   const completedTodos = todos.filter((td) => td.completed);
 
@@ -238,7 +319,7 @@ console.log("todos@@",todos)
             zone="pending"
             title="ยังไม่เสร็จ"
             count={pendingTodos.length}
-            onDrop={handleToggleTodo}
+            onDrop={handleDrop}
           >
             {pendingTodos.length === 0 ? (
               <div className="text-center py-8">
@@ -272,7 +353,7 @@ console.log("todos@@",todos)
             zone="completed"
             title="เสร็จแล้ว"
             count={completedTodos.length}
-            onDrop={handleToggleTodo}
+            onDrop={handleDrop}
           >
             {completedTodos.length === 0 ? (
               <div className="text-center py-8">

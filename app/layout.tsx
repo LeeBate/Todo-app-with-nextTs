@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <DragDropProvider>
-        <body className={`font-sarabun min-h-screen`}>{children}</body>
+        <body className='min-h-screen'>{children}</body>
       </DragDropProvider>
     </html>
   );

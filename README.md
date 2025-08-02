@@ -88,7 +88,6 @@ interface DragDropState {
 // ซ่อน badge เมื่อ:
 1. ครบ 30 วินาที (auto-hide)
 2. ลาก completed → pending (ทันที)
-3. คลิก checkbox เพื่อยกเลิก (ทันที)
 ```
 
 ## API Design
