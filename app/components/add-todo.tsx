@@ -28,7 +28,6 @@ export default function AddTodo({ onAdd, isLoading }: AddTodoProps) {
         เพิ่ม Todo ใหม่
       </h2>
       <form onSubmit={handleSubmit} className="flex gap-3">
-        <label className="sr-only">หัวข้อ Todo</label>
         <input
           id="todo-input"
           type="text"

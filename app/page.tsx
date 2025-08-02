@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Todo } from "@/app/lib/types";
 import Loading from "./components/loading";
-import { DragDropProvider, useDragDrop } from "./components/drag-drop-context";
+import { useDragDrop } from "./components/drag-drop-context";
 import TodoStats from "./components/todo-stats";
 import ErrorAlert from "./components/error-alert";
 import AddTodo from "./components/add-todo";
 import DropZone from "./components/drop-zone";
 import DraggableTodoItem from "./components/draggable-todo-item";
 import { X } from "lucide-react";
+import { Todo } from "./lib/types";
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<boolean>(false);
-
+console.log("todos@@",todos)
   const {
     setRecentlyDroppedItem,
     recentlyDroppedItem,
@@ -137,11 +137,11 @@ export default function Home() {
             );
             return [...pendingTodos, toggledTodo, ...otherCompletedTodos];
           } else {
+           
             const otherPendingTodos = pendingTodos.filter((t) => t.id !== id);
             return [toggledTodo, ...otherPendingTodos, ...completedTodos];
           }
         }
-
         return updatedTodos;
       });
 
@@ -212,104 +212,22 @@ export default function Home() {
     }
   };
 
-  const handleDrop = async (todoId: number, newCompleted: boolean) => {
-    try {
-      setActionLoading(true);
-      setError(null);
-
-      const draggedTodo = todos.find((t) => t.id === todoId);
-      if (!draggedTodo) return;
-
-      if (!newCompleted && recentlyDroppedItem === todoId) {
-        setRecentlyDroppedItem(null);
-        setIndicatorType(null);
-      }
-      const res = await fetch(`/api/todos/${todoId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          completed: newCompleted,
-        }),
-      });
-
-      if (!res.ok) {
-        setError("พบข้อผิดพลาดในการอัพเดทข้อมูลจ้า");
-        return;
-      }
-
-      setTodos((prev) => {
-        const updatedTodos = prev.map((t) =>
-          t.id === todoId ? { ...t, completed: newCompleted } : t
-        );
-
-        // แยก todos ตามสถานะ
-        const completedTodos = updatedTodos.filter((t) => t.completed);
-        const pendingTodos = updatedTodos.filter((t) => !t.completed);
-
-        // หา todo ที่เพิ่งถูกลาก
-        const draggedTodo = updatedTodos.find((t) => t.id === todoId);
-
-        if (draggedTodo) {
-          if (newCompleted) {
-            // ถ้าลากไป "เสร็จแล้ว" ให้ไปอยู่ด้านบนของ completed todos
-            const otherCompletedTodos = completedTodos.filter(
-              (t) => t.id !== todoId
-            );
-            return [...pendingTodos, draggedTodo, ...otherCompletedTodos];
-          } else {
-            // ถ้าลากไป "ยังไม่เสร็จ" ให้ไปอยู่ด้านบนของ pending todos
-            const otherPendingTodos = pendingTodos.filter(
-              (t) => t.id !== todoId
-            );
-            return [draggedTodo, ...otherPendingTodos, ...completedTodos];
-          }
-        }
-
-        return updatedTodos;
-      });
-
-      let newIndicatorType: "new" | "completed" | null = null;
-
-      if (!draggedTodo.completed && newCompleted) {
-        newIndicatorType = "completed";
-      }
-
-      if (newIndicatorType) {
-        setRecentlyDroppedItem(todoId);
-        setIndicatorType(newIndicatorType);
-        setTimeout(() => {
-          setRecentlyDroppedItem(null);
-          setIndicatorType(null);
-        }, 30000);
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "ไม่สามารถอัพเดท Todo ได้จ้า"
-      );
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
   const pendingTodos = todos.filter((td) => !td.completed);
   const completedTodos = todos.filter((td) => td.completed);
-  const completedCount = completedTodos?.length;
-  const totalCount = todos.length;
 
   if (loading) {
     return <Loading />;
   }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       {actionLoading && (
-        <div className=" absolute right-5 w-6 h-6 loading-spinner"/>
+        <div className=" absolute right-5 w-6 h-6 loading-spinner" />
       )}
       <div className=" container mx-auto px-4 max-w-6xl">
         {error && <ErrorAlert message={error} onRetry={fetchTodo} />}
         <div className=" grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <TodoStats totalCount={totalCount} completedCount={completedCount} />
+          <TodoStats todos={todos} completedTodos={completedTodos} />
           <AddTodo onAdd={handleAddTodo} isLoading={actionLoading} />
         </div>
 
@@ -320,7 +238,7 @@ export default function Home() {
             zone="pending"
             title="ยังไม่เสร็จ"
             count={pendingTodos.length}
-            onDrop={handleDrop}
+            onDrop={handleToggleTodo}
           >
             {pendingTodos.length === 0 ? (
               <div className="text-center py-8">
@@ -354,7 +272,7 @@ export default function Home() {
             zone="completed"
             title="เสร็จแล้ว"
             count={completedTodos.length}
-            onDrop={handleDrop}
+            onDrop={handleToggleTodo}
           >
             {completedTodos.length === 0 ? (
               <div className="text-center py-8">

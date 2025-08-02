@@ -49,18 +49,8 @@ export default function DraggableTodoItem({
     }
   };
 
-  const handleDragStart = (e: React.DragEvent) => {
+  const handleDragStart = () => {
     setDraggedItem(todo.id);
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", todo.id.toString());
-
-    // Create custom drag image
-    const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
-    dragImage.style.transform = "rotate(5deg)";
-    dragImage.style.opacity = "0.8";
-    document.body.appendChild(dragImage);
-    e.dataTransfer.setDragImage(dragImage, 0, 0);
-    setTimeout(() => document.body.removeChild(dragImage), 0);
   };
 
   const handleDragEnd = () => {
@@ -99,7 +89,7 @@ export default function DraggableTodoItem({
       }`}
     >
       <RecentlyDroppedIndicator
-        isRecentlyDropped={recentlyDroppedItem === todo.id}
+        isRecentlyDropped={isRecentlyDropped}
         indicatorType={indicatorType}
       />
       <div className="flex items-center gap-3">
@@ -127,9 +117,6 @@ export default function DraggableTodoItem({
 
         {isEditing ? (
           <div className="flex-1 flex gap-2">
-            <label htmlFor={`edit-todo-${todo.id}`} className="sr-only">
-              แก้ไขหัวข้อ Todo
-            </label>
             <input
               id={`edit-todo-${todo.id}`}
               type="text"

@@ -8,7 +8,7 @@ import CustomIcon from "./icon-circlr";
 
 interface DropZoneProps {
   zone: "pending" | "completed";
-  onDrop: (todoId: number, newStatus: boolean) => void;
+  onDrop: (todoId: number) => void;
   children: React.ReactNode;
   title: string;
   count: number;
@@ -29,7 +29,6 @@ export default function DropZone({
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
-    // Only clear drop zone if we're leaving the drop zone container
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
       setDropZone(null);
     }
@@ -38,8 +37,7 @@ export default function DropZone({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     if (draggedItem !== null) {
-      const newCompleted = zone === "completed";
-      onDrop(draggedItem, newCompleted);
+      onDrop(draggedItem);
     }
     setDropZone(null);
   };

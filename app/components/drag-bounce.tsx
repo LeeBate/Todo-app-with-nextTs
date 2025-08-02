@@ -20,7 +20,6 @@ export default function RecentlyDroppedIndicator({
       setShowIndicator(true);
       setProgress(100);
 
-      // Progress bar animation
       const progressInterval = setInterval(() => {
         setProgress((prev) => {
           if (prev <= 0) {
@@ -54,7 +53,7 @@ export default function RecentlyDroppedIndicator({
           textColor: "text-white",
           icon: <Plus className="w-3 h-3 inline mr-1" />,
           text: "ใหม่!",
-          animation: "animate-pulse",
+          animation: "animate-bounce",
         };
       case "completed":
         return {
@@ -80,7 +79,7 @@ export default function RecentlyDroppedIndicator({
         {/* Progress bar background */}
         <div
           className="absolute bottom-0 left-0 h-0.5 bg-white bg-opacity-30 transition-all duration-100 ease-linear"
-          style={{ width: `${progress}%` }}
+          style={{ width: progress }}
         />
         {config.icon}
         {config.text}

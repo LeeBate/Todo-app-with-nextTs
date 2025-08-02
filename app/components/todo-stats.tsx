@@ -1,12 +1,13 @@
+import { Todo } from "../lib/types";
+
 interface TodoStatsProps {
-  totalCount: number;
-  completedCount: number;
+  todos: Todo[];
+  completedTodos: Todo[];
 }
 
-export default function TodoStats({
-  totalCount,
-  completedCount,
-}: TodoStatsProps) {
+export default function TodoStats({ todos, completedTodos }: TodoStatsProps) {
+  const totalCount = todos.length;
+  const completedCount = completedTodos?.length;
   const pendingCount = totalCount - completedCount;
 
   return (
