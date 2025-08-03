@@ -271,7 +271,7 @@ console.log("todos@@",todos)
       });
 
       let newIndicatorType: "new" | "completed" | null = null;
-console.log("draggedTodov@@",draggedTodo)
+
       if (!draggedTodo.completed && newCompleted) {
         newIndicatorType = "completed";
       }
